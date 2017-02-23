@@ -7,6 +7,6 @@
     linear-gradient(to right, #bdf,  #bdf 1px,rgba(255,255,255,0) 1px);
 }
 
-.grid-square.mapped {
+.grid-square.mapped, .grid-square:hover {
   background-color: #ddc;  
 }

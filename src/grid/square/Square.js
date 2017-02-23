@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PropTypes} from 'react'
 import './square.css'
 
 
@@ -8,12 +8,16 @@ function buildClassName(walls) {
 
 function buildStyle(walls, size) {
   const sizePx = `${size}px`
-
-  return {
+  const style = {
     width: sizePx,
     height: sizePx,
-    backgroundImage: buildGradients(walls)
   }
+
+  if (walls.length) {
+    style.backgroundImage = buildGradients(walls)
+  }
+
+  return style
 }
 
 function buildGradients(walls = []) {
@@ -36,10 +40,10 @@ const Square = ({onClick, onMouseOver, walls, size}) => {
 
 
 Square.propTypes = {
-  onClick: React.PropTypes.func.isRequired,
-  onMouseOver: React.PropTypes.func.isRequired,
-  size: React.PropTypes.number.isRequired,
-  walls: React.PropTypes.array // ['top', 'left', 'bottom', 'right']
+  onClick: PropTypes.func.isRequired,
+  onMouseOver: PropTypes.func.isRequired,
+  size: PropTypes.number.isRequired,
+  walls: PropTypes.array // ['top', 'left', 'bottom', 'right']
 }
 
 Square.defaultProps = {

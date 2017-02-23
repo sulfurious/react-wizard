@@ -2,6 +2,6 @@ import React from 'react'
 
 import './grid.css'
 
-const Grid = ({children}) => <div className="grid">{children}</div>
+const Grid = ({setGridRef, children}) => <div ref={setGridRef} className="grid">{children}</div>
 
 export default Grid

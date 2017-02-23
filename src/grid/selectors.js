@@ -4,8 +4,23 @@ const getGridSize = (state) => state.gridSize
 const getSquareSize = (state) => state.squareSize
 
 export const getGridColCount = createSelector(
-    [getGridSize, getSquareSize],
-    (gridSize, squareSize) => {
-      return Math.floor(gridSize[0] / squareSize)
-    }
+  [getGridSize, getSquareSize],
+  (gridSize, squareSize) => {
+    return Math.floor(gridSize.width / squareSize)
+  }
+)
+
+export const getGridRowCount = createSelector(
+  [getGridSize, getSquareSize],
+  (gridSize, squareSize) => {
+    return Math.floor(gridSize.height / squareSize)
+  }
+)
+
+export const getSquareCount = createSelector(
+  [getGridSize, getSquareSize],
+  (gridSize, squareSize) => {
+    return Math.floor(gridSize.width / squareSize)
+          * Math.floor(gridSize.height / squareSize)
+  }
 )

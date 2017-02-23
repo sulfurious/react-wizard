@@ -2,9 +2,10 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 import * as gridActions from './actions'
-import {getGridColCount} from './selectors'
+import {getGridColCount, getSquareCount} from './selectors'
 import Grid from './Grid'
 import SquareContainer from './square/SquareContainer'
+import SliderContainer from './slider/SliderContainer'
 
 
 class GridContainer extends Component {
@@ -26,58 +27,50 @@ class GridContainer extends Component {
   handleResize = () => {
     const grid = this.gridRef
     
-    this.props.dispatch(
-      gridActions.resizeGrid({
-        size: [grid.clientWidth, grid.clientHeight],
-        offset: {
-          top: grid.offsetTop,
-          left: grid.offsetLeft
-        }
-      })
-    )
+    this.props.resizeGrid({
+      size: {
+        width: grid.clientWidth, 
+        height: grid.clientHeight
+      }
+    })
   }
 
-  handleSquareSizeChange = (event) => {
-    event.preventDefault()
+  setGridRef = gridRef => this.gridRef = gridRef
 
-    this.props.dispatch( gridActions.resizeSquare(Number(event.target.value)) )
+  getSquareCol = (gridColCount, idx) => {
+    return idx % gridColCount + 1
   }
 
-  getSquareCount = (gridSize, squareSize) => {    
-    return Math.floor(gridSize[0] / squareSize)
-           * Math.floor(gridSize[1] / squareSize)
-  }
-
-  getSquareCol = (gridSize, squareSize, idx) => {
-    const gridColCount = getGridColCount(this.props.gridState)
-
+  getSquareRow = (gridColCount, idx) => {
     return Math.ceil((idx + 1) / gridColCount)
   }
 
+  buildSquareContainer = (idx, gridColCount) => {
+    const col = this.getSquareCol(gridColCount, idx)
+    const row = this.getSquareRow(gridColCount, idx)
+
+    return (      
+      <SquareContainer
+        key={`col-${col}-row-${row}`}
+        col={col} 
+        row={row}
+        idx={idx} 
+      />
+    )
+  }
+
   render() {
-    const {gridSize, squareSize} = this.props.gridState
-    const squareCount = this.getSquareCount(gridSize, squareSize)
+    const gridState = this.props.gridState
+    const squareCount = getSquareCount(gridState)
+    const gridColCount = getGridColCount(gridState)
     const squares = Array(...Array(squareCount))
 
     return (
-      <div 
-        ref={gridRef => this.gridRef = gridRef}
-        className="grid-container">
-        
-        <input 
-          name="squareSize"
-          type="range" 
-          min="50" 
-          max="200" 
-          onChange={this.handleSquareSizeChange} 
-          value={squareSize} />
+      <div className="grid-container">        
+        <SliderContainer/>
 
-        <Grid>
-          {squares.map((square, idx) => {
-            return (
-              <SquareContainer col={this.getSquareCol(gridSize, squareSize, idx)} key={idx}/>
-            )
-          })}
+        <Grid setGridRef={this.setGridRef}>
+          {squares.map( (square, idx) => this.buildSquareContainer(idx, gridColCount) )}
         </Grid>
 
       </div>
@@ -92,4 +85,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(GridContainer)
+export default connect(mapStateToProps, gridActions)(GridContainer)

@@ -1,26 +1,59 @@
-import React, {Component} from 'react'
+import React, {PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
 
+import * as squareActions from './actions'
 import Square from './Square'
 
 
 class SquareContainer extends Component {
+  static propTypes = {
+    idx: PropTypes.number.isRequired,
+    col: PropTypes.number.isRequired,
+    row: PropTypes.number.isRequired
+  }
+
   handleSquareClick = (event) => {
+    const {idx, col, row} = this.props
+    
     event.preventDefault()
-    console.log('client event:', Object.assign({}, event))
+
+    this.props.startDrawing({
+      idx,
+      col,
+      row,
+      walls: this.setWalls()
+    })
   }
 
   handleSquareMouseOver = (event) => {
+    const {idx, col, row} = this.props
+    
     event.preventDefault()
+
+    this.props.drawWalls({
+      idx,
+      col,
+      row
+    })
+  }
+
+  setWalls = (side, walls = ['top', 'bottom', 'left', 'right']) => {
+    const newWalls = [...walls]
+
+    if (side && newWalls.indexOf(side) === -1) {
+      newWalls.push(side)
+    }
+
+    return newWalls
   }
 
   render() {
-    const {squareSize} = this.props.gridState
+    const {mappedSquare, squareSize} = this.props
 
     return (
       <Square 
         size={squareSize}
-        walls={[]}
+        walls={mappedSquare && mappedSquare.walls}
         onClick={this.handleSquareClick}
         onMouseOver={this.handleSquareMouseOver}
         />
@@ -29,10 +62,13 @@ class SquareContainer extends Component {
 }
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    gridState: state.grid
+    squareSize: state.grid.squareSize,
+    mappedSquare: state.grid.mappedSquares.find(
+      square => square && square.col === ownProps.col && square.row === ownProps.row
+    )
   }
 }
 
-export default connect(mapStateToProps)(SquareContainer)
+export default connect(mapStateToProps, squareActions)(SquareContainer)
