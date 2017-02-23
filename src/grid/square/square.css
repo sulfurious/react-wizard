@@ -1,0 +1,12 @@
+.grid-square {
+  background-color: #fff;
+  background-image: 
+    linear-gradient(to bottom, #bdf,  #bdf 1px,rgba(255,255,255,0) 1px),
+    linear-gradient(to left, #bdf,  #bdf 1px,rgba(255,255,255,0) 1px),
+    linear-gradient(to top, #bdf, #bdf 1px, rgba(50,50,50,0) 1px),
+    linear-gradient(to right, #bdf,  #bdf 1px,rgba(255,255,255,0) 1px);
+}
+
+.grid-square.mapped {
+  background-color: #ddc;  
+}

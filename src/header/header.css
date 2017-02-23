@@ -1,0 +1,21 @@
+.header {
+  display: flex;
+  background-color: #222;
+  height: 60px;
+  color: white;
+}
+
+.logo {
+  animation: logo-spin infinite 20s linear;
+  height: 60px;
+}
+
+@keyframes logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.title {
+  flex: 1;
+  text-align: left;  
+}
