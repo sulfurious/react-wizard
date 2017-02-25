@@ -1,3 +1,5 @@
+import {setMappedSquare} from './selectors'
+
 // Actions
 const RESIZE_SQUARE = 'wizard/grid/RESIZE_SQUARE';
 const RESIZE_GRID = 'wizard/grid/RESIZE_GRID';
@@ -63,15 +65,6 @@ export default function reducer(state = initialState, action) {
   default: 
     return initialState
   }
-}
-
-
-// Helper functions
-function setMappedSquare(mappedSquares, payload) {
-  const newSquares = [...mappedSquares]
-  
-  newSquares[payload.idx] = payload.square
-  return newSquares
 }
 
 
