@@ -30,15 +30,52 @@ export const getSquareCount = createSelector(
 
 
 // Helpers
-export function setMappedSquare(mappedSquares, payload) {
+export function createSquare(properties) {
+  return Object.assign({},
+    {
+      col: 0,
+      row: 0,
+      walls: ['top', 'bottom', 'left', 'right']
+    },
+    properties
+  )
+}
+
+export function findMappedSquareIndexByPos(mappedSquares, square) {
+  return mappedSquares.findIndex(
+    mappedSquare => mappedSquare && mappedSquare.col === square.col && mappedSquare.row === square.row
+  )
+}
+
+export function setMappedSquare(mappedSquares, square, idx) {
   const newSquares = [...mappedSquares]
-  
-  newSquares[payload.idx] = payload.square
+  const squareIdx = idx === undefined ? findMappedSquareIndexByPos(mappedSquares, square) : idx
+  newSquares[squareIdx] = square
   return newSquares
 }
 
-export function adjustSquareWalls(squareA, squareB) {
-  // get direction from square B location
-  // adjust squareA walls
-  // return squareA walls
+function getDrawDirection(fromSquare, toSquare) {
+  if (toSquare.col > fromSquare.col) {
+    return 'left'
+  }
+  if (toSquare.col < fromSquare.col) {
+    return 'right'
+  }
+  if (toSquare.row < fromSquare.row) {
+    return 'bottom'
+  }
+  if (toSquare.row > fromSquare.row) {
+    return 'top'
+  }
+
+  return false  
+}
+
+export function drawSquareWalls(fromSquare, toSquare) {
+  const walls = [...fromSquare.walls]
+  const direction = getDrawDirection(fromSquare, toSquare)
+
+  walls.splice(walls.indexOf(direction), 1)
+
+  return walls
 }

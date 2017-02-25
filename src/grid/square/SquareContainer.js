@@ -2,7 +2,7 @@ import React, {PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
 
 import {startDrawing, stopDrawing, drawWalls} from '../duck'
-import {getCurrentSquare} from '../selectors'
+import {getCurrentSquare, createSquare} from '../selectors'
 import Square from './Square'
 
 
@@ -14,7 +14,9 @@ class SquareContainer extends Component {
   }
 
   handleSquareClick = (event) => {
-    const {idx, col, row, currentSquare} = this.props    
+    const {idx, col, row, currentSquare, mappedSquare} = this.props
+    const square = mappedSquare || createSquare({col, row})
+
     event.preventDefault()
 
     if (currentSquare) {
@@ -23,25 +25,22 @@ class SquareContainer extends Component {
     } else {
       this.props.startDrawing({
         idx,
-        col,
-        row,
-        walls: this.setWalls()
+        square
       })
     }
   }
 
   handleSquareMouseOver = (event) => {
-    const {idx, col, row, currentSquare} = this.props    
+    const {idx, col, row, currentSquare, mappedSquare} = this.props    
+    const nextSquare = mappedSquare || createSquare({col, row})
+
     event.preventDefault()
 
     if (currentSquare) {
       this.props.drawWalls({
         idx,
         currentSquare,
-        nextSquare: {
-          col,
-          row
-        }
+        nextSquare
       })
     }
   }

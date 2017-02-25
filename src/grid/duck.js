@@ -1,4 +1,4 @@
-import {setMappedSquare} from './selectors'
+import {setMappedSquare, drawSquareWalls, findMappedSquareIndexByPos} from './selectors'
 
 // Actions
 const RESIZE_SQUARE = 'wizard/grid/RESIZE_SQUARE';
@@ -40,7 +40,7 @@ export default function reducer(state = initialState, action) {
   case START_DRAWING :
     return {
       ...state,
-      mappedSquares: setMappedSquare(state.mappedSquares, payload),
+      mappedSquares: setMappedSquare(state.mappedSquares, payload.square, payload.idx),
       currentSquare: {
         col: payload.square.col,
         row: payload.square.row
@@ -54,11 +54,21 @@ export default function reducer(state = initialState, action) {
     }
 
   case DRAW_WALLS :
+    let mappedSquares = [...state.mappedSquares]
+    const currentSquare = mappedSquares[findMappedSquareIndexByPos(mappedSquares, payload.currentSquare)]
+    const nextSquare = {...payload.nextSquare}
+    
+    currentSquare.walls = drawSquareWalls(currentSquare, nextSquare)
+    nextSquare.walls = drawSquareWalls(nextSquare, currentSquare)
+    mappedSquares = setMappedSquare(mappedSquares, currentSquare)
+    mappedSquares = setMappedSquare(mappedSquares, nextSquare, payload.idx)
+
     return {
       ...state,
+      mappedSquares,
       currentSquare: {
-        col: payload.nextSquare.col,
-        row: payload.nextSquare.row
+        col: nextSquare.col,
+        row: nextSquare.row
       }
     }
 
@@ -88,7 +98,7 @@ export function resizeSquare(size) {
   }
 }
 
-export function startDrawing({idx, ...square}) {
+export function startDrawing({idx, square}) {
   return {
     type: START_DRAWING,
     payload: {
