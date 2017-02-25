@@ -1,8 +1,8 @@
 import React from 'react'
 import './app.css'
 
-import Header from '../header/Header'
-import GridContainer from '../grid/GridContainer'
+import Header from '../header'
+import GridContainer from '../grid'
 
 const App = () => {
   return (

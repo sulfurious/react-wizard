@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
-import * as sliderActions from './actions'
+import {resizeSquare} from '../duck'
 import Slider from './Slider'
 
 
@@ -10,7 +10,7 @@ class SliderContainer extends Component {
   handleOnChange = (event) => {
     event.preventDefault()
 
-    this.props.dispatch( sliderActions.resizeSquare(Number(event.target.value)) )
+    this.props.dispatch( resizeSquare(Number(event.target.value)) )
   }
 
   render() {

@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
-import * as gridActions from './actions'
+import {resizeGrid} from './duck'
 import {getGridColCount, getSquareCount} from './selectors'
 import Grid from './Grid'
-import SquareContainer from './square/SquareContainer'
-import SliderContainer from './slider/SliderContainer'
+import SquareContainer from './square'
+import SliderContainer from './slider'
 
 
 class GridContainer extends Component {
@@ -60,9 +60,7 @@ class GridContainer extends Component {
   }
 
   render() {
-    const gridState = this.props.gridState
-    const squareCount = getSquareCount(gridState)
-    const gridColCount = getGridColCount(gridState)
+    const {squareCount, gridColCount} = this.props
     const squares = Array(...Array(squareCount))
 
     return (
@@ -81,8 +79,9 @@ class GridContainer extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    gridState: state.grid
+    squareCount: getSquareCount(state.grid),
+    gridColCount: getGridColCount(state.grid),
   }
 }
 
-export default connect(mapStateToProps, gridActions)(GridContainer)
+export default connect(mapStateToProps, {resizeGrid})(GridContainer)
