@@ -1,11 +1,11 @@
 import {setMappedSquare, drawSquareWalls, findMappedSquareIndexByPos} from './selectors'
 
 // Actions
-const RESIZE_SQUARE = 'wizard/grid/RESIZE_SQUARE';
-const RESIZE_GRID = 'wizard/grid/RESIZE_GRID';
-const START_DRAWING = 'wizard/grid/START_DRAWING';
-const STOP_DRAWING = 'wizard/grid/STOP_DRAWING';
-const DRAW_WALLS = 'wizard/grid/DRAW_WALLS';
+const RESIZE_SQUARE = 'wizard/grid/RESIZE_SQUARE'
+const RESIZE_GRID = 'wizard/grid/RESIZE_GRID'
+const START_DRAWING = 'wizard/grid/START_DRAWING'
+const STOP_DRAWING = 'wizard/grid/STOP_DRAWING'
+const DRAW_WALLS = 'wizard/grid/DRAW_WALLS'
 
 
 const initialState = {
@@ -42,8 +42,8 @@ export default function reducer(state = initialState, action) {
       ...state,
       mappedSquares: setMappedSquare(state.mappedSquares, payload.square, payload.idx),
       currentSquare: {
-        col: payload.square.col,
-        row: payload.square.row
+        ...payload.square,
+        idx: payload.idx
       }
     }
 
@@ -54,22 +54,10 @@ export default function reducer(state = initialState, action) {
     }
 
   case DRAW_WALLS :
-    let mappedSquares = [...state.mappedSquares]
-    const currentSquare = mappedSquares[findMappedSquareIndexByPos(mappedSquares, payload.currentSquare)]
-    const nextSquare = {...payload.nextSquare}
-    
-    currentSquare.walls = drawSquareWalls(currentSquare, nextSquare)
-    nextSquare.walls = drawSquareWalls(nextSquare, currentSquare)
-    mappedSquares = setMappedSquare(mappedSquares, currentSquare)
-    mappedSquares = setMappedSquare(mappedSquares, nextSquare, payload.idx)
-
     return {
       ...state,
-      mappedSquares,
-      currentSquare: {
-        col: nextSquare.col,
-        row: nextSquare.row
-      }
+      mappedSquares: setMappedSquare(setMappedSquare(state.mappedSquares, payload.nextSquare), payload.currentSquare),
+      currentSquare: payload.nextSquare
     }
 
   default: 
@@ -114,13 +102,19 @@ export function stopDrawing() {
   }
 }
 
-export function drawWalls({idx, currentSquare, nextSquare}) {
+export function drawWalls({idx, currentSquare, nextSquare}) {    
   return {
     type: DRAW_WALLS,
     payload: {
-      idx,
-      currentSquare,
-      nextSquare
+      currentSquare: {
+        ...currentSquare,
+        walls: drawSquareWalls(currentSquare, nextSquare)
+      },
+      nextSquare: {
+        ...nextSquare,
+        idx,
+        walls: drawSquareWalls(nextSquare, currentSquare)
+      }
     }
   }
 }
