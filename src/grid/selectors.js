@@ -4,7 +4,7 @@ import { createSelector } from 'reselect'
 // Selectors
 export const getGridSize = (state) => state.gridSize
 export const getSquareSize = (state) => state.squareSize
-export const getCurrentSquare = (state) => state.currentSquare
+export const getCurrentSquare = (state) => state.currentSquare > -1 && state.mappedSquares[state.currentSquare]
 
 export const getGridColCount = createSelector(
   [getGridSize, getSquareSize],
@@ -74,8 +74,52 @@ function getDrawDirection(fromSquare, toSquare) {
 export function drawSquareWalls(fromSquare, toSquare) {
   const walls = [...fromSquare.walls]
   const direction = getDrawDirection(fromSquare, toSquare)
+  const idx = walls.indexOf(direction)
 
-  walls.splice(walls.indexOf(direction), 1)
+  if (idx > -1) {
+    walls.splice(idx, 1)
+  }
 
   return walls
+}
+
+export function buildGradients(walls = []) {
+  const newWalls = buildDiagonalGradients(walls)
+  const color = '#666'
+  const pct = '15'
+
+  return newWalls.map(wall => {
+    let isDiagonal = Number.isFinite(wall)
+    let wallPct = isDiagonal ? (pct/2) : pct
+    let wallText = isDiagonal ? `${wall}deg` : `to ${wall}`
+    return `linear-gradient(${wallText}, ${color}, ${color} ${wallPct}%, transparent ${wallPct}%)`
+  })
+}
+
+// linear-gradient(45deg, rgb(102, 102, 102), rgb(102, 102, 102) 7.5%, transparent 7.5%)
+export function buildDiagonalGradients(walls) {
+  const newWalls = [...walls]
+  const right = walls.indexOf('right') > -1
+  const left = walls.indexOf('left') > -1
+  const top = walls.indexOf('top') > -1
+  const bottom = walls.indexOf('bottom') > -1
+
+  if ((right && left) || (top && bottom)) {
+    return newWalls
+  }
+
+  if (!right && !top) {    
+    newWalls.push(45)
+  }
+  if (!right && !bottom) {    
+    newWalls.push(135)
+  }
+  if (!left && !bottom) {    
+    newWalls.push(225)
+  }
+  if (!left && !top) {    
+    newWalls.push(315)
+  }
+
+  return newWalls
 }

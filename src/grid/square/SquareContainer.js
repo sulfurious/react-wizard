@@ -61,6 +61,7 @@ class SquareContainer extends Component {
     return (
       <Square 
         size={squareSize}
+        isMapped={!!mappedSquare}
         walls={mappedSquare && mappedSquare.walls}
         onClick={this.handleSquareClick}
         onMouseOver={this.handleSquareMouseOver}

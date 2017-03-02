@@ -1,4 +1,4 @@
-import {setMappedSquare, drawSquareWalls, findMappedSquareIndexByPos} from './selectors'
+import {setMappedSquare, drawSquareWalls} from './selectors'
 
 // Actions
 const RESIZE_SQUARE = 'wizard/grid/RESIZE_SQUARE'
@@ -15,8 +15,7 @@ const initialState = {
   },
   squareSize: 100,
   mappedSquares: [],
-  currentSquare: false, // or {col: 0, row: 0}
-  nextSquare: false // or {col: 0, row: 0}
+  currentSquare: -1 // index
 }
 
 // Reducer
@@ -41,23 +40,29 @@ export default function reducer(state = initialState, action) {
     return {
       ...state,
       mappedSquares: setMappedSquare(state.mappedSquares, payload.square, payload.idx),
-      currentSquare: {
-        ...payload.square,
-        idx: payload.idx
-      }
+      currentSquare: payload.idx
     }
 
   case STOP_DRAWING :
     return {
       ...state,
-      currentSquare: false
+      currentSquare: -1
     }
 
   case DRAW_WALLS :
     return {
       ...state,
-      mappedSquares: setMappedSquare(setMappedSquare(state.mappedSquares, payload.nextSquare), payload.currentSquare),
-      currentSquare: payload.nextSquare
+      mappedSquares: 
+        setMappedSquare(
+          setMappedSquare(
+            state.mappedSquares, 
+            payload.nextSquare, 
+            payload.nextSquareIdx
+          ), 
+          payload.currentSquare, 
+          state.currentSquare
+        ),
+      currentSquare: payload.nextSquareIdx
     }
 
   default: 
@@ -102,7 +107,7 @@ export function stopDrawing() {
   }
 }
 
-export function drawWalls({idx, currentSquare, nextSquare}) {    
+export function drawWalls({idx, currentSquare, nextSquare}) {
   return {
     type: DRAW_WALLS,
     payload: {
@@ -112,9 +117,9 @@ export function drawWalls({idx, currentSquare, nextSquare}) {
       },
       nextSquare: {
         ...nextSquare,
-        idx,
         walls: drawSquareWalls(nextSquare, currentSquare)
-      }
+      },
+      nextSquareIdx: idx
     }
   }
 }
