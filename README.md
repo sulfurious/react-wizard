@@ -10,4 +10,8 @@ This is an educational playground to try a few things with React. The hope is to
 - [x] A few interesting CSS tricks
 - [x] Love
 
+## TODO
+- "3D" walkthrough with diagonal gradients
+- Odd things happen if you 1.Draw 2.Resize 3.Draw again
+
 <img src="screenshot.png">
