@@ -1,11 +1,14 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 
-import {resizeSquare} from '../duck'
+import { resizeSquare } from '../duck'
 import Slider from './Slider'
 
 
 class SliderContainer extends Component {
+  static propTypes = {
+    squareSize: PropTypes.number
+  }
 
   handleOnChange = (event) => {
     event.preventDefault()
