@@ -10,4 +10,4 @@ This is an educational playground to try a few things with React. The hope is to
 - [x] A few interesting CSS tricks
 - [x] Love
 
-<img src="screenshot.png">
+<img src="screenshot.png" />
